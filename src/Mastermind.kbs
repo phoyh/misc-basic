@@ -1,0 +1,45 @@
+prepare:
+dim solution(5)
+dim attempt(5)
+attempts = 0
+for i = 1 to 4
+  getOne:
+  x = int(rand*6)+1
+  if x=solution[1] or x=solution[2] or x=solution[3] then goto getOne
+  solution[i]=x
+next i
+
+getInput:
+attempts = attempts + 1
+input "Your attempt "+attempts+": ",attempt$
+if length(attempt$) <> 4 then
+  print "invalid"
+  goto getInput
+endif
+for i = 1 to 4
+  attempt[i] = int(mid(attempt$,i,1))
+next i
+
+checkInput:
+hei = 0
+for i = 1 to 4
+  if solution[i] = attempt[i] then hei = hei + 1
+next i
+
+bai = 0
+for i = 1 to 4
+  for j = 1 to 4
+    if solution[i] = attempt[j] and i<>j then bai = bai + 1
+  next j
+next i
+
+print "Black: "+hei
+print "White: "+bai
+
+if hei=0 then say "Still a long way to go"
+if hei=1 then say "You are starting to catch up"
+if hei=2 then say "You have found some clues"
+if hei=3 then say "Only one to go"
+if hei=4 then say "Oh no, you got me. Well done!"
+
+if hei <> 4 then goto getInput
