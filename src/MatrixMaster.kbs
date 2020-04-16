@@ -1,0 +1,105 @@
+outputvisible true
+editvisible false
+graphvisible false
+print "Willkommen beim Matrix-Meister!"
+print
+l = -1
+while l < 1 or int(l) <> l
+	input "Level (1, 2, 3, ...): ", l
+endwhile
+dim a(l)
+for i = 0 to l-1
+	a[i] = r()
+next i
+dim m(l+1,l)
+for i = 0 to l-1
+	acc = 0
+	for j = 0 to l-1
+		m[j,i] = r()
+		acc += m[j,i] * a[j]
+	next j
+	m[l,i] = acc
+next i
+call showMatrix(ref(m))
+rem call normalizeMatrix(ref(m))
+rem call showMatrix(ref(m))
+print
+print "Loese!"
+print
+dim aa(l)
+challenge:
+isCorrect = true
+for i = 0 to l-1
+input chr(97 + i) + " = ", aa[i]
+if aa[i] <> a[i] then isCorrect = false
+next i
+if not isCorrect then
+	print "Falsch!"
+	print "Nochmal..."
+	print
+	goto challenge
+endif
+print "Bravo!"
+
+function r()
+r = int(rand*21) - 10
+endfunction
+
+subroutine normalizeMatrix(ref(m))
+for i=0 to m[?,] - 3
+call normalizeRow(ref(m), i, i)
+for j=i+1 to m[,?] - 1
+call eliminateColumn(ref(m), i, i, j)
+next j
+next i
+for i=m[?,] - 2 to 1 step -1
+call normalizeRow(ref(m), i, i)
+for j=i-1 to 0 step -1
+call eliminateColumn(ref(m), i, i, j)
+next j
+next i
+endsubroutine
+
+subroutine eliminateColumn(ref(m), i, j, targetRow)
+factor = -m[i,targetRow] / m[i,j]
+for k=0 to m[?,] - 1
+m[k,targetRow] += factor * m[k,j]
+next k
+endsubroutine
+
+subroutine normalizeRow(ref(m), i, j)
+factor = 1 / m[i,j]
+for k=0 to m[?,] - 1
+m[k,j] *= factor
+next k
+endsubroutine
+
+subroutine showMatrix(ref(m))
+for j=0 to m[,?] - 1
+print "( ";
+for i=0 to m[?,] - 2
+print format$(m[i,j]) + " ";
+next i
+print "| ";
+print format$(m[m[?,]-1,j]) + " )"
+next j
+print
+endsubroutine
+
+function format$(x)
+sign$ = " "
+if x < 0 then
+sign$ = "-"
+x = -x
+endif
+beforePoint = int(x)
+afterPoint = x - int(x)
+r$ = right( "        " + sign$ + beforePoint , 4)
+if afterPoint = 0 then
+r$ += "     "
+else
+r$ += "."
+r$ += right( left( "" + afterPoint + "      ", 6), 4)
+endif
+return r$
+end function
